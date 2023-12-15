@@ -1637,9 +1637,16 @@ def getRemainingSearches(browser: WebDriver):
     if not 'pcSearch' in counters:
         return 0, 0
     progressDesktop = counters['pcSearch'][0]['pointProgress'] + \
-        counters['pcSearch'][1]['pointProgress']
-    targetDesktop = counters['pcSearch'][0]['pointProgressMax'] + \
-        counters['pcSearch'][1]['pointProgressMax']
+            progressDesktop = 0
+
+    for item in counters['pcSearch']:
+        progressDesktop += item.get('pointProgress', 0)
+
+    targetDesktop = 0
+
+    for item in counters['pcSearch']:
+        targetDesktop += item.get('pointProgressMax', 0)
+
     if targetDesktop == 33:
         # Level 1 EU
         searchPoints = 3
