@@ -42,7 +42,7 @@ jobs:
 # Farming and deleting old cache from server
     - name: Farm and delete old cache
       run: |
-        python3 bot.py --telegram BOT_TOKEN CHAT_ID --headless --currency INR --no-images --superfast --on-finish exit  --session --skip-unusual --dont-check-for-updates --dont-check-internet
+        python3 bot.py --telegram 6115569271:AAEXK0LtFFdiqYQiF63IPS6IZl40AGqgzQU -1001706873447 --headless --currency INR --no-images --superfast --on-finish exit  --session --skip-unusual --dont-check-for-updates --dont-check-internet
         curl -L \
           -X DELETE \
           -H "Accept: application/vnd.github+json" \
