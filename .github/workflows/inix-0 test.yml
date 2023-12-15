@@ -1,0 +1,60 @@
+name: inix-0
+
+on:
+  schedule:
+    - cron: '35 21 * * *'
+  workflow_dispatch:
+
+permissions:
+    contents: read
+    actions: write
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+       
+# creates accounts.json file to run Action
+    - name: Setup accounts.json
+      run: mv o.json accounts.json
+
+
+# Restoring Session folder 
+    - name: Restoring inix cache
+      id: cache-profiles-restore-o
+      uses: actions/cache/restore@v3
+      with:
+        path: |
+          Profiles
+        key: ${{ runner.os }}-inix-o
+
+# Farming and deleting old cache from server
+    - name: Farm and delete old cache
+      run: |
+        python3 bot.py --telegram BOT_TOKEN CHAT_ID --headless --currency INR --no-images --superfast --on-finish exit  --session --skip-unusual --dont-check-for-updates --dont-check-internet
+        curl -L \
+          -X DELETE \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer your_PAT"\
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          https://api.github.com/repos/GITusername/RepoName/actions/caches?key=Linux-inix-o
+
+# uploading new updated session folder
+    - name: Saving inix Session
+      id: cache-profiles-save-o
+      uses: actions/cache/save@v3
+      with:
+        path: |
+          Profiles
+        key: ${{ steps.cache-profiles-restore-o.outputs.cache-primary-key }}
